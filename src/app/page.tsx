@@ -61,22 +61,16 @@ export default function Home() {
             label="Demots imponeringsnivå"
             value={values.impression}
             onChange={handleChange("impression")}
-            totalValue={100}
-            otherValues={[values.speed, values.learning]}
           />
           <BalanceBar
             label="Hastigheten som demot görs på"
             value={values.speed}
             onChange={handleChange("speed")}
-            totalValue={100}
-            otherValues={[values.impression, values.learning]}
           />
           <BalanceBar
             label="Meningsfullt utlärande av processen"
             value={values.learning}
             onChange={handleChange("learning")}
-            totalValue={100}
-            otherValues={[values.impression, values.speed]}
           />
         </motion.div>
       </main>

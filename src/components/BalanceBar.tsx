@@ -6,11 +6,9 @@ type BalanceBarProps = {
   label: string;
   value: number;
   onChange: (value: number) => void;
-  totalValue: number;
-  otherValues: number[];
 };
 
-const BalanceBar = ({ label, value, onChange, totalValue, otherValues }: BalanceBarProps) => {
+const BalanceBar = ({ label, value, onChange }: BalanceBarProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const percentage = value;
   const displayValue = value.toFixed(1);
