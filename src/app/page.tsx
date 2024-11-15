@@ -84,17 +84,17 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
         >
           <BalanceBar
-            label="Demots imponeringsnivå"
+            label="Demots imponeringsnivå för kunden"
             value={values.impression}
             onChange={handleChange("impression")}
           />
           <BalanceBar
-            label="Hastigheten som demot görs på"
+            label="Hastigheten som demot görs klart på"
             value={values.speed}
             onChange={handleChange("speed")}
           />
           <BalanceBar
-            label="Meningsfullt utlärande av processen"
+            label="Meningsfullt utlärande av processen till en nybörjare"
             value={values.learning}
             onChange={handleChange("learning")}
           />
