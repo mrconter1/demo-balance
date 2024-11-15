@@ -22,18 +22,35 @@ export default function Home() {
     setValues(prev => {
       const valueDifference = newValue - prev[changedKey];
       const otherKeys = Object.keys(prev).filter(k => k !== changedKey) as Array<keyof typeof values>;
-      const changePerColumn = -valueDifference / 2;
       
       const newValues = {
         ...prev,
         [changedKey]: newValue,
       };
 
-      newValues[otherKeys[0]] = Math.max(0, Math.min(100, prev[otherKeys[0]] + changePerColumn));
-      newValues[otherKeys[1]] = Math.max(0, Math.min(100, prev[otherKeys[1]] + changePerColumn));
+      // If one of the other columns is at 0 or 100, distribute changes only to the remaining column
+      const otherCol1 = prev[otherKeys[0]];
+      const otherCol2 = prev[otherKeys[1]];
 
+      if (otherCol1 === 0 || otherCol1 === 100) {
+        // Distribute all change to otherCol2
+        newValues[otherKeys[1]] = Math.max(0, Math.min(100, otherCol2 - valueDifference));
+        newValues[otherKeys[0]] = otherCol1; // Keep at 0 or 100
+      } else if (otherCol2 === 0 || otherCol2 === 100) {
+        // Distribute all change to otherCol1
+        newValues[otherKeys[0]] = Math.max(0, Math.min(100, otherCol1 - valueDifference));
+        newValues[otherKeys[1]] = otherCol2; // Keep at 0 or 100
+      } else {
+        // Normal case: distribute evenly
+        const changePerColumn = -valueDifference / 2;
+        newValues[otherKeys[0]] = Math.max(0, Math.min(100, otherCol1 + changePerColumn));
+        newValues[otherKeys[1]] = Math.max(0, Math.min(100, otherCol2 + changePerColumn));
+      }
+
+      // Ensure total doesn't exceed 200
       const total = newValues[changedKey] + newValues[otherKeys[0]] + newValues[otherKeys[1]];
       if (total > 200) {
+        // If we're over 200, reduce the changed column to make it exactly 200
         newValues[changedKey] = 200 - (newValues[otherKeys[0]] + newValues[otherKeys[1]]);
       }
 
