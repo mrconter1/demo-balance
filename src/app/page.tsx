@@ -6,10 +6,19 @@ import { motion } from "framer-motion";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
-  const [values, setValues] = useState({
-    impression: 90,
-    speed: 90,
-    learning: 20
+  const [values, setValues] = useState(() => {
+    // Create array of possible keys
+    const keys: Array<'impression' | 'speed' | 'learning'> = ['impression', 'speed', 'learning'];
+    
+    // Randomly shuffle the array
+    const shuffled = [...keys].sort(() => Math.random() - 0.5);
+    
+    // First two get 90, last one gets 20
+    return {
+      [shuffled[0]]: 90,
+      [shuffled[1]]: 90,
+      [shuffled[2]]: 20
+    };
   });
 
   useEffect(() => {
