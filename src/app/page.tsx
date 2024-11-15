@@ -60,7 +60,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black">
-      <main className="container mx-auto flex flex-col items-center px-4 py-12">
+      <main className="container mx-auto flex flex-col items-center px-4 py-12 max-w-7xl">
         <motion.h1 
           className="text-5xl font-bold text-white mb-24"
           initial={{ opacity: 0, y: -20 }}
@@ -70,7 +70,7 @@ export default function Home() {
         </motion.h1>
         
         <motion.div 
-          className="flex gap-24 items-center justify-center w-full"
+          className="grid grid-cols-3 gap-4 w-full max-w-6xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >

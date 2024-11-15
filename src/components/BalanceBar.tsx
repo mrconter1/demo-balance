@@ -55,7 +55,7 @@ const BalanceBar = ({ label, value, onChange }: BalanceBarProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-end h-[600px]">
+    <div className="flex flex-col items-center justify-end h-[600px] w-full">
       <motion.div
         className="text-4xl font-bold text-white mb-4"
         animate={{ scale: isDragging ? 1.1 : 1 }}
