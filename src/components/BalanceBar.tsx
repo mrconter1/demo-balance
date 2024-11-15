@@ -84,9 +84,6 @@ const BalanceBar = ({ label, value, onChange }: BalanceBarProps) => {
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-white/20" />
         </motion.div>
-        
-        {/* Center line indicator */}
-        <div className="absolute w-full h-px bg-white/10 top-1/2 pointer-events-none" />
       </div>
 
       <h2 className="text-lg font-medium text-neutral-200 text-center h-12">
