@@ -12,59 +12,90 @@ type BalanceBarProps = {
 
 const BalanceBar = ({ label, value, onChange, totalValue, otherValues }: BalanceBarProps) => {
   const [isDragging, setIsDragging] = useState(false);
-  const percentage = (value / totalValue) * 100;
+  const percentage = Math.max(0, Math.min(100, (value / totalValue) * 100));
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsDragging(true);
-    handleMouseMove(e);
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+  const calculateNewValue = (clientY: number, rect: DOMRect) => {
+    const height = rect.height;
+    const relativeY = Math.max(0, Math.min(height, clientY - rect.top));
+    const invertedPercentage = (1 - relativeY / height) * 100;
+    return Math.round((invertedPercentage / 100) * totalValue);
   };
 
-  const handleMouseMove = (e: MouseEvent | React.MouseEvent) => {
-    if (!isDragging) return;
-    const container = document.getElementById("bar-container");
+  const handleDrag = (clientY: number) => {
+    const container = document.getElementById(`bar-container-${label}`);
     if (!container) return;
 
     const rect = container.getBoundingClientRect();
-    const height = rect.height;
-    const y = e.clientY - rect.top;
-    const percentage = Math.max(0, Math.min(100, (1 - y / height) * 100));
-    const newValue = Math.round((percentage / 100) * totalValue);
+    const newValue = calculateNewValue(clientY, rect);
     
-    // Ensure total doesn't exceed 99
+    // Ensure we don't exceed totalValue when accounting for other values
     const otherSum = otherValues.reduce((a, b) => a + b, 0);
     const maxAllowed = totalValue - otherSum;
-    const finalValue = Math.min(newValue, maxAllowed);
+    const finalValue = Math.min(Math.max(0, newValue), maxAllowed);
     
-    onChange(finalValue);
+    if (finalValue !== value) {
+      onChange(finalValue);
+    }
   };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", handleMouseUp);
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+    handleDrag(e.clientY);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      handleDrag(e.clientY);
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="text-lg font-medium">{label}</div>
-      <div className="text-2xl font-bold">{value}</div>
+    <div className="flex flex-col items-center justify-end h-[600px]">
       <motion.div
+        className="text-4xl font-bold text-white mb-4"
+        animate={{ scale: isDragging ? 1.1 : 1 }}
+      >
+        {value}
+      </motion.div>
+      
+      <div 
         className={cn(
-          "w-24 bg-neutral-200 dark:bg-neutral-800 rounded-t-lg cursor-pointer relative",
-          isDragging && "cursor-grabbing"
+          "relative w-32 h-[400px] rounded-xl overflow-hidden mb-6",
+          "bg-neutral-800/50 backdrop-blur-sm border border-neutral-800",
+          isDragging && "ring-2 ring-blue-500"
         )}
-        style={{ height: "400px" }}
+        id={`bar-container-${label}`}
         onMouseDown={handleMouseDown}
-        id="bar-container"
+        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
         <motion.div
-          className="absolute bottom-0 w-full bg-blue-500 rounded-t-lg"
-          animate={{ height: `${percentage}%` }}
+          className="absolute bottom-0 w-full bg-blue-500"
+          initial={{ height: '0%' }}
+          animate={{ 
+            height: `${percentage}%`,
+            backgroundColor: value < 0 ? '#ef4444' : '#3b82f6'
+          }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        />
-      </motion.div>
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-white/20" />
+        </motion.div>
+        
+        {/* Center line indicator */}
+        <div className="absolute w-full h-px bg-white/10 top-1/2 pointer-events-none" />
+      </div>
+
+      <h2 className="text-lg font-medium text-neutral-200 text-center h-12">
+        {label}
+      </h2>
     </div>
   );
 };
