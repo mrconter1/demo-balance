@@ -12,13 +12,14 @@ type BalanceBarProps = {
 
 const BalanceBar = ({ label, value, onChange, totalValue, otherValues }: BalanceBarProps) => {
   const [isDragging, setIsDragging] = useState(false);
-  const percentage = Math.max(0, Math.min(100, (value / totalValue) * 100));
+  const percentage = value;
+  const displayValue = value.toFixed(1);
 
   const calculateNewValue = (clientY: number, rect: DOMRect) => {
     const height = rect.height;
     const relativeY = Math.max(0, Math.min(height, clientY - rect.top));
     const invertedPercentage = (1 - relativeY / height) * 100;
-    return Math.round((invertedPercentage / 100) * totalValue);
+    return Math.round(invertedPercentage);
   };
 
   const handleDrag = (clientY: number) => {
@@ -28,10 +29,7 @@ const BalanceBar = ({ label, value, onChange, totalValue, otherValues }: Balance
     const rect = container.getBoundingClientRect();
     const newValue = calculateNewValue(clientY, rect);
     
-    // Ensure we don't exceed totalValue when accounting for other values
-    const otherSum = otherValues.reduce((a, b) => a + b, 0);
-    const maxAllowed = totalValue - otherSum;
-    const finalValue = Math.min(Math.max(0, newValue), maxAllowed);
+    const finalValue = Math.min(Math.max(0, newValue), 100);
     
     if (finalValue !== value) {
       onChange(finalValue);
@@ -64,7 +62,7 @@ const BalanceBar = ({ label, value, onChange, totalValue, otherValues }: Balance
         className="text-4xl font-bold text-white mb-4"
         animate={{ scale: isDragging ? 1.1 : 1 }}
       >
-        {value}
+        {displayValue}
       </motion.div>
       
       <div 
