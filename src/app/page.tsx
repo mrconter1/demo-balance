@@ -70,13 +70,20 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black">
       <main className="container mx-auto flex flex-col items-center px-4 py-12 max-w-7xl">
-        <motion.h1 
-          className="text-5xl font-bold text-white mb-24"
+        <motion.div 
+          className="text-center mb-24"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          Demo Quality Balance
-        </motion.h1>
+          <h1 className="text-5xl font-bold text-white mb-6">
+            Demo Quality Balance
+          </h1>
+          <p className="text-neutral-400 max-w-2xl mx-auto text-lg">
+            Visualize the trade-offs between making an impressive demo, completing it quickly, 
+            and teaching the process effectively. Adjust the bars to see how improving one aspect 
+            affects the others.
+          </p>
+        </motion.div>
         
         <motion.div 
           className="grid grid-cols-3 gap-4 w-full max-w-6xl"
